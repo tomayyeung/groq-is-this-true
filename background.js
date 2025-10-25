@@ -19,4 +19,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // Keep the message channel open for the async response from storage + API
     return true;
   }
+
+
+
+  if (message.action === "open_extension_popup") {
+    // Programmatically open the extension's popup
+    // Note: This API is intended for user-driven interactions.
+    console.log("background got the message");
+    if (chrome.action.openPopup) {
+      chrome.action.openPopup();
+    } else {
+      console.warn("chrome.action.openPopup not available in this Chrome version or context.");
+    }
+  }
 });
+
+
