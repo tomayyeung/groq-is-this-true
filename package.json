@@ -1,7 +1,7 @@
 {
   "name": "groq-is-this-true",
   "scripts": {
-    "build": "GROQ_API_KEY=$(grep GROQ_API_KEY .env | cut -d '=' -f2) esbuild background.js --bundle --outfile=dist/background.js --format=esm --define:process.env.GROQ_API_KEY='\"'$GROQ_API_KEY'\"'"
+    "build": "esbuild background.js --bundle --outfile=dist/background.js --format=esm"
   },
   "dependencies": {
     "groq-sdk": "latest"
