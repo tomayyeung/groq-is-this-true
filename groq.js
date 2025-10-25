@@ -1,17 +1,27 @@
 import Groq from "groq-sdk";
 
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
+// `check` now accepts an optional apiKey. In extension/service-worker
+// environments, pass the key from `chrome.storage` rather than relying on
+// `process.env`.
+export async function check(statement, apiKey = process.env.GROQ_API_KEY) {
+  if (!apiKey) {
+    throw new Error(
+      "No GROQ API key provided. Save your key in the extension options or pass it as the second argument to `check(statement, apiKey)`."
+    );
+  }
 
-export async function check(statement) {
+  const groq = new Groq({
+    apiKey,
+    dangerouslyAllowBrowser: true,
+  });
+
   const completion = await groq.chat.completions.create({
     model: "groq/compound",
     messages: [
       {
         role: "system",
-        content: "You are a fact-checker. Evaluate whether the given statement is true or false. Provide a brief response in 3 sentences or less. Indicate what other reliable sources say about this claim - whether they agree or disagree with the statement.",
+        content:
+          "You are a fact-checker. Evaluate whether the given statement is true or false. Provide a brief response in 3 sentences or less. Indicate what other reliable sources say about this claim - whether they agree or disagree with the statement.",
       },
       {
         role: "user",
@@ -19,14 +29,9 @@ export async function check(statement) {
       },
     ],
   });
+
   return completion.choices[0]?.message?.content;
 }
 
-async function main() {
-  const statement = "The Eiffel Tower is located in Berlin.";
-  console.log("Checking statement:", statement);
-  const result = await check(statement);
-  console.log("Fact-check result:", result);
-}
-
-main().catch(console.error);
+// Note: no top-level network calls on import. Callers should call `check`
+// when they have an API key available (e.g. loaded from chrome.storage).

@@ -9,8 +9,20 @@ chrome.action.onClicked.addListener((tab) => {
 // Listen for fact-check requests from content script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "performFactCheck") {
-    return check(message.text)
-      .then(result => sendResponse({ result }))
-      .catch(error => sendResponse({ error: error.message }));
+    // Retrieve the stored API key from chrome.storage before making the call.
+    chrome.storage.sync.get(["groqKey"], (items) => {
+      const apiKey = items.groqKey;
+      if (!apiKey) {
+        sendResponse({ error: "GROQ API key not configured. Open extension options to set the key." });
+        return;
+      }
+
+      check(message.text, apiKey)
+        .then(result => sendResponse({ result }))
+        .catch(error => sendResponse({ error: error.message }));
+    });
+
+    // Keep the message channel open for the async response from storage + API
+    return true;
   }
 });
