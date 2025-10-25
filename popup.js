@@ -29,9 +29,9 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       // document.getElementById("raw-result").textContent = response.result;
 
       // Parse response
-      const parsedResponse = response.result.split("-----");
+      const parsedResponse = response.result.split("^^^^^");
       const info = parsedResponse[0];
-      const sources = parsedResponse[1].split("---");
+      const sources = parsedResponse[1].split("^^^");
 
       resultEl.textContent = info;
       document.getElementById("sources-label").textContent = "Sources:";
