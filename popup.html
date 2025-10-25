@@ -16,13 +16,69 @@
       border-radius: 6px;
       min-height: 50px;
     }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .action-btn {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .fact-check-btn {
+      background: #4CAF50;
+      color: white;
+    }
+    .ai-detect-btn {
+      background: #2196F3;
+      color: white;
+    }
+    .action-btn:hover {
+      opacity: 0.9;
+    }
+    .action-btn:active {
+      transform: scale(0.98);
+    }
+    .content-section {
+      display: none;
+    }
+    .content-section.active {
+      display: block;
+    }
+    #ai-result {
+      margin-top: 10px;
+      padding: 8px;
+      background: #f0f0f0;
+      border-radius: 6px;
+      min-height: 50px;
+    }
   </style>
 </head>
 <body>
-  <h3>Groq says:</h3>
-  <div id="info">Loading result...</div>
-  <div id="sources-label"></div>
-  <ul id="sources"></ul>
+  <div class="action-buttons">
+    <button class="action-btn fact-check-btn" id="fact-check-mode">📝 Fact Check</button>
+    <button class="action-btn ai-detect-btn" id="ai-detect-mode">🖼️ AI Detect</button>
+  </div>
+
+  <div id="fact-check-section" class="content-section active">
+    <h3>Groq says:</h3>
+    <div id="info">Loading result...</div>
+    <div id="sources-label"></div>
+    <ul id="sources"></ul>
+  </div>
+
+  <div id="ai-detect-section" class="content-section">
+    <h3>AI Image Detection:</h3>
+    <button id="capture-screenshot" class="action-btn ai-detect-btn" style="width: 100%; margin-bottom: 10px;">
+      📸 Capture Screenshot
+    </button>
+    <div id="ai-result">Click "Capture Screenshot" to analyze an image</div>
+  </div>
 
   <div id="raw-result"></div>
 
