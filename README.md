@@ -13,5 +13,3 @@
   - cache results?
 - edit dom
   - when we find misinformation in the text, highlight it in red
-- sources
-  - the extension should display sources that agree / disagree in a more organized ui. instead of just somewhere in the paragraph blob that groq gives
