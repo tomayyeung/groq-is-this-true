@@ -1,7 +1,11 @@
 import Groq from "groq-sdk";
-const groq = new Groq();
 
-async function check(statement) {
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+  dangerouslyAllowBrowser: true,
+});
+
+export async function check(statement) {
   const completion = await groq.chat.completions.create({
     model: "groq/compound",
     messages: [
