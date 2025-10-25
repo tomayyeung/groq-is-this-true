@@ -26,6 +26,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         return;
       }
 
+      // document.getElementById("raw-result").textContent = response.result;
+
       // Parse response
       const parsedResponse = response.result.split("-----");
       const info = parsedResponse[0];
@@ -34,12 +36,14 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       resultEl.textContent = info;
       document.getElementById("sources-label").textContent = "Sources:";
       sources.forEach(source => {
-        const li = document.createElement("li");
-        const a = document.createElement("a");
-        a.textContent = source;
-        a.href = source;
-        li.appendChild(a);
-        sourcesEl.appendChild(li);
+        if (source.trim().length > 0) {
+          const li = document.createElement("li");
+          const a = document.createElement("a");
+          a.textContent = source;
+          a.href = source;
+          li.appendChild(a);
+          sourcesEl.appendChild(li);
+        }
       });
 
     });
