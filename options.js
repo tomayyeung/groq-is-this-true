@@ -1,22 +1,34 @@
-const input = document.getElementById('groqKey');
+const groqKeyInput = document.getElementById('groqKey');
+const sightengineUserInput = document.getElementById('sightengineUser');
+const sightengineSecretInput = document.getElementById('sightengineSecret');
 const saveBtn = document.getElementById('save');
 const status = document.getElementById('status');
 
-// Load saved key on open
-chrome.storage.sync.get(['groqKey'], (items) => {
-  if (items.groqKey) input.value = items.groqKey;
+// Load saved keys on open
+chrome.storage.sync.get(['groqKey', 'sightengineUser', 'sightengineSecret'], (items) => {
+  if (items.groqKey) groqKeyInput.value = items.groqKey;
+  if (items.sightengineUser) sightengineUserInput.value = items.sightengineUser;
+  if (items.sightengineSecret) sightengineSecretInput.value = items.sightengineSecret;
 });
 
 saveBtn.addEventListener('click', () => {
-  const val = input.value.trim();
-  if (!val) {
-    status.textContent = 'Please enter a valid API key.';
+  const groqKey = groqKeyInput.value.trim();
+  const sightengineUser = sightengineUserInput.value.trim();
+  const sightengineSecret = sightengineSecretInput.value.trim();
+
+  if (!groqKey && !sightengineUser && !sightengineSecret) {
+    status.textContent = 'Please enter at least one API credential.';
     status.classList.add('error');
     return;
   }
 
-  chrome.storage.sync.set({ groqKey: val }, () => {
-    status.textContent = 'API key saved.';
+  const settings = {};
+  if (groqKey) settings.groqKey = groqKey;
+  if (sightengineUser) settings.sightengineUser = sightengineUser;
+  if (sightengineSecret) settings.sightengineSecret = sightengineSecret;
+
+  chrome.storage.sync.set(settings, () => {
+    status.textContent = 'Settings saved successfully!';
     status.classList.remove('error');
     setTimeout(() => (status.textContent = ''), 3000);
   });

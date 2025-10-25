@@ -6,7 +6,11 @@
     "permissions": [
         "activeTab",
         "scripting",
-        "storage"
+        "storage",
+        "tabs"
+    ],
+    "host_permissions": [
+        "https://api.sightengine.com/*"
     ],
     "background": {
         "service_worker": "dist/background.js",
@@ -18,7 +22,8 @@
                 "<all_urls>"
             ],
             "js": [
-                "selection.js"
+                "selection.js",
+                "dist/cropper-handler.js"
             ]
         }
     ],
