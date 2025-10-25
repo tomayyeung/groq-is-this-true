@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Groq</title>
@@ -9,6 +10,7 @@
       padding: 10px;
       width: 300px;
     }
+
     #result {
       margin-top: 10px;
       padding: 8px;
@@ -18,8 +20,12 @@
     }
   </style>
 </head>
+
 <body>
   <h3>Groq says:</h3>
+
+  <h4 id="current-url"></h4>
+
   <div id="info">Loading result...</div>
   <div id="sources-label"></div>
   <ul id="sources"></ul>
@@ -28,4 +34,5 @@
 
   <script src="popup.js"></script>
 </body>
+
 </html>

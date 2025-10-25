@@ -1,15 +1,17 @@
+// Listen for getSelection request from popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "getSelection") {
     const selectedText = window.getSelection()?.toString() || "";
-    sendResponse({ selectedText });
+    const currentUrl = window.location.hostname;
+    sendResponse({ selectedText, currentUrl });
   }
   return true; // keep channel open for async response
 });
 
 let popup = null;
 
-function removePopup(){
-  if(popup){
+function removePopup() {
+  if (popup) {
     popup.remove();
     popup = null
   }
@@ -49,12 +51,9 @@ document.addEventListener("mouseup", (event) => {
       window.getSelection().removeAllRanges();
       alert("clicked popup");
     });
-
-  } else if(popup && !popup.contains(event.target)){
+  } else if (popup && !popup.contains(event.target)) {
     console.log("there is a popup!");
-    removePopup(); 
+    removePopup();
   }
 
-  
-  
 });

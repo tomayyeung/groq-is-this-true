@@ -3,6 +3,8 @@ resultEl.textContent = "Loading result...";
 
 const sourcesEl = document.getElementById("sources");
 
+const currentUrlEl = document.getElementById("current-url");
+
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   chrome.tabs.sendMessage(tabs[0].id, { action: "getSelection" }, (response) => {
     const selectedText = response?.selectedText;
@@ -11,7 +13,15 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       return;
     }
 
-    // Send to background or API
+    const currentUrl = response?.currentUrl;
+    if (!currentUrl) {
+      resultEl.textContent = "(Could not get current URL)";
+      return;
+    }
+
+    currentUrlEl.textContent = currentUrl;
+
+    // Fact check the selected text
     chrome.runtime.sendMessage({ action: "performFactCheck", text: selectedText }, (response) => {
       if (!response) {
         resultEl.textContent = "Error: no response";
@@ -25,8 +35,6 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         resultEl.textContent = "(No result)";
         return;
       }
-
-      // document.getElementById("raw-result").textContent = response.result;
 
       // Parse response
       const parsedResponse = response.result.split("^^^^^");

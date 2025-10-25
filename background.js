@@ -1,6 +1,6 @@
-import { check } from './groq.js';
+import { factCheck } from './groq.js';
 
-// Listen for fact-check requests from content script
+// Listen for factCheck requests from popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "performFactCheck") {
     // Retrieve the stored API key from chrome.storage before making the call.
@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return;
       }
 
-      check(message.text, apiKey)
+      factCheck(message.text, apiKey)
         .then(result => sendResponse({ result }))
         .catch(error => sendResponse({ error: error.message }));
     });
