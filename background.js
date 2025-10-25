@@ -25,7 +25,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "open_extension_popup") {
     // Programmatically open the extension's popup
     // Note: This API is intended for user-driven interactions.
-    console.log("background got the message");
     if (chrome.action.openPopup) {
       chrome.action.openPopup();
     } else {
