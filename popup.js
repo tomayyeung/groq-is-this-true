@@ -41,21 +41,25 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       // Parse response
       const parsedResponse = response.result.split("^^^^^");
       const info = parsedResponse[0];
-      const sources = parsedResponse[1].split("^^^");
 
       resultEl.textContent = info;
-      document.getElementById("sources-label").textContent = "Sources:";
-      sources.forEach(source => {
-        if (source.trim().length > 0) {
-          const li = document.createElement("li");
-          const a = document.createElement("a");
-          a.textContent = source;
-          a.href = source;
-          a.target = "_blank";
-          li.appendChild(a);
-          sourcesEl.appendChild(li);
-        }
-      });
+
+      // Only process sources if the delimiter was present
+      if (parsedResponse.length > 1 && parsedResponse[1]) {
+        const sources = parsedResponse[1].split("^^^");
+        document.getElementById("sources-label").textContent = "Sources:";
+        sources.forEach(source => {
+          if (source.trim().length > 0) {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.textContent = source;
+            a.href = source;
+            a.target = "_blank";
+            li.appendChild(a);
+            sourcesEl.appendChild(li);
+          }
+        });
+      }
 
     });
   });
