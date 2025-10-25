@@ -22,7 +22,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     currentUrlEl.textContent = currentUrl;
 
     // Fact check the selected text
-    chrome.runtime.sendMessage({ action: "performFactCheck", text: selectedText }, (response) => {
+    chrome.runtime.sendMessage({ action: "performFactCheck", text: selectedText, currentUrl: currentUrl }, (response) => {
       if (!response) {
         resultEl.textContent = "Error: no response";
         return;

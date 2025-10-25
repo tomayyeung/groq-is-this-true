@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return;
       }
 
-      factCheck(message.text, apiKey)
+      factCheck(message.text, apiKey, message.currentUrl)
         .then(result => sendResponse({ result }))
         .catch(error => sendResponse({ error: error.message }));
     });
