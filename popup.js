@@ -36,6 +36,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         return;
       }
 
+      console.log(response.result);
+
       // Parse response
       const parsedResponse = response.result.split("^^^^^");
       const info = parsedResponse[0];
@@ -49,6 +51,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
           const a = document.createElement("a");
           a.textContent = source;
           a.href = source;
+          a.target = "_blank";
           li.appendChild(a);
           sourcesEl.appendChild(li);
         }
