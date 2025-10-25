@@ -1,0 +1,8 @@
+{
+  "name": "groq-is-this-true",
+  "version": "1.0.0",
+  "dependencies": {
+    "groq-sdk": "^0.34.0"
+  },
+  "type": "module"
+}
