@@ -21,7 +21,7 @@ export async function check(statement, apiKey = process.env.GROQ_API_KEY) {
       {
         role: "system",
         content:
-          "You are a fact-checker. Evaluate whether the given statement is true or false. Provide a brief response in 3 sentences or less. Indicate what other reliable sources say about this claim - whether they agree or disagree with the statement.",
+          "You are a fact-checker. Evaluate whether the given statement is true or false. arovide a brief response in 3 sentences or less. Do not use markdown. Afterwards, always insert the delimiter '-----'. Then list any sources used as links, separated with '---'.",
       },
       {
         role: "user",
