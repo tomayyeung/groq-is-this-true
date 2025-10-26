@@ -2,8 +2,9 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "getSelection") {
     const selectedText = window.getSelection()?.toString() || "";
-    const currentUrl = window.location.hostname;
-    sendResponse({ selectedText, currentUrl });
+    const currentHost = window.location.hostname;
+    const currentUrl = window.location.href;
+    sendResponse({ selectedText, currentHost, currentUrl });
   }
   return true; // keep channel open for async response
 });

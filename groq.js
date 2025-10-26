@@ -1,8 +1,5 @@
 import Groq from "groq-sdk";
 
-// TODO: update currentUrl and currentHost
-// currentHost is just the host, eg cnn.com
-// currentUrl is the entire URL
 export async function factCheck(statement, apiKey, currentUrl, currentHost) {
   if (!apiKey) {
     throw new Error(
@@ -21,7 +18,7 @@ export async function factCheck(statement, apiKey, currentUrl, currentHost) {
       {
         role: "system",
         content:
-          `You are a fact-checker. Evaluate whether the given statement is true or false. Provide a brief response in 3 sentences or less. Do not use sources from the site ${currentUrl}. Do not use markdown. If you didn't find any sources agreeing or disagreeing with the statement, then just give me the brief response. If you found sources, then insert the sources after your brief response. Separate the brief response and the list of sources with the delimiter '^^^^^'. Separate sources with '^^^'. Sources should just be links, don't include any other text.`,
+          `You are a fact-checker. Evaluate whether the given statement is true or false. Provide a brief response in 3 sentences or less. Do not use sources from the site ${currentHost}. Do not use markdown. If you didn't find any sources agreeing or disagreeing with the statement, then just give me the brief response. If you found sources, then insert the sources after your brief response. Separate the brief response and the list of sources with the delimiter '^^^^^'. Separate sources with '^^^'. Sources should just be links, don't include any other text.`,
       },
       {
         role: "user",
@@ -33,7 +30,7 @@ export async function factCheck(statement, apiKey, currentUrl, currentHost) {
       {
         role: "user",
         content:
-          `You are a fact-checker. Evaluate whether the content of the page ${currentHost} is true or false. Provide a brief response in 3 sentences or less. Do not use sources from the site ${currentUrl}. Do not use markdown. If you didn't find any sources agreeing or disagreeing, then just give me the brief response. If you found sources, then insert the sources after your brief response. Separate the brief response and the list of sources with the delimiter '^^^^^'. Separate sources with '^^^'. Sources should just be links, don't include any other text.`,
+          `You are a fact-checker. Evaluate whether the content of the page ${currentUrl} is true or false. Provide a brief response in 3 sentences or less. Do not use sources from the site ${currentHost}. Do not use markdown. If you didn't find any sources agreeing or disagreeing, then just give me the brief response. If you found sources, then insert the sources after your brief response. Separate the brief response and the list of sources with the delimiter '^^^^^'. Separate sources with '^^^'. Sources should just be links, don't include any other text.`,
       },
     ];
     

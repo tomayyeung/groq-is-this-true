@@ -22,7 +22,7 @@ function performFactCheck(message, sendResponse) {
       return;
     }
 
-    factCheck(message.text, apiKey, message.currentUrl)
+    factCheck(message.text, apiKey, message.currentUrl, message.currentHost)
       .then(result => sendResponse({ result }))
       .catch(error => sendResponse({ error: error.message }));
   });

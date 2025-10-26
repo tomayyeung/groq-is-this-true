@@ -49,10 +49,17 @@ function performFactCheck() {
       }
 
       const selectedText = response?.selectedText;
-      if (!selectedText) {
-        resultEl.textContent = "(No text selected)";
+      // if (!selectedText) {
+      //   resultEl.textContent = "(No text selected)";
+      //   return;
+      // }
+
+      const currentHost = response?.currentHost;
+      if (!currentHost) {
+        resultEl.textContent = "(Could not get current host)";
         return;
       }
+
 
       const currentUrl = response?.currentUrl;
       if (!currentUrl) {
@@ -63,7 +70,7 @@ function performFactCheck() {
       currentUrlEl.textContent = currentUrl;
 
       // Fact check the selected text
-      chrome.runtime.sendMessage({ action: "performFactCheck", text: selectedText, currentUrl: currentUrl }, (response) => {
+      chrome.runtime.sendMessage({ action: "performFactCheck", text: selectedText, currentUrl: currentUrl, currentHost: currentHost}, (response) => {
         if (chrome.runtime.lastError) {
           resultEl.textContent = "Error: " + chrome.runtime.lastError.message;
           return;
