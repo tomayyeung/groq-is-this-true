@@ -6,10 +6,11 @@ const saveBtn = document.getElementById('save');
 const status = document.getElementById('status');
 
 // Load saved keys on open
-chrome.storage.sync.get(['groqKey', 'sightengineUser', 'sightengineSecret'], (items) => {
+chrome.storage.sync.get(['groqKey', 'sightengineUser', 'sightengineSecret', 'saplingAPIKey'], (items) => {
   if (items.groqKey) groqKeyInput.value = items.groqKey;
   if (items.sightengineUser) sightengineUserInput.value = items.sightengineUser;
   if (items.sightengineSecret) sightengineSecretInput.value = items.sightengineSecret;
+  if (items.saplingAPIKey) saplingAPIKeyInput.value = items.saplingAPIKey;
 });
 
 saveBtn.addEventListener('click', () => {

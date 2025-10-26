@@ -225,7 +225,7 @@ function displayAIResult(data) {
 
 document.getElementById("check-for-ai-text").addEventListener("click", async () => {
   const resultDiv = document.getElementById("ai-text-result");
-  resultDiv.textContent = "Awaiting result...";
+  resultDiv.textContent = "Extracting text from page...";
 
   // Get active tab
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -237,13 +237,13 @@ document.getElementById("check-for-ai-text").addEventListener("click", async () 
       return;
     }
 
-    const text = response.text.slice(0, 10000); // limit length if needed
+    const text = response.text.slice(0, 3000); // limit length if needed
     resultDiv.textContent = "Analyzing text with Sapling AI...";
 
     try {
       const analysis = await analyzeWithSapling(text);
       resultDiv.innerHTML = `
-        <strong>AI Probability:</strong> ${Math.round(analysis.ai_probability * 100)}%<br/>
+        <strong>AI Probability:</strong> ${analysis.ai_probability}%<br/>
         <small>${analysis.message || ""}</small>
       `;
     } catch (err) {
@@ -254,19 +254,19 @@ document.getElementById("check-for-ai-text").addEventListener("click", async () 
 
 async function analyzeWithSapling(text) {
   // Retrieve key from storage (you said you store it in options)
-  const { saplingKey } = await chrome.storage.sync.get("saplingKey");
+  const { saplingAPIKey } = await chrome.storage.sync.get("saplingAPIKey");
 
-  if (!saplingKey) {
+  if (!saplingAPIKey) {
     throw new Error("Sapling API key not configured in extension options.");
   }
 
   const response = await fetch("https://api.sapling.ai/api/v1/aidetect", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Key ${saplingKey}`
-    },
-    body: JSON.stringify({ text })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      key: saplingAPIKey,
+      text: text
+    })
   });
 
   if (!response.ok) throw new Error("API error: " + response.status);
