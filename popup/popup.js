@@ -243,7 +243,7 @@ document.getElementById("check-for-ai-text").addEventListener("click", async () 
     try {
       const analysis = await analyzeWithSapling(text);
       resultDiv.innerHTML = `
-        <strong>AI Probability:</strong> ${analysis.ai_probability}%<br/>
+        <strong>AI Probability:</strong> ${analysis.score}%<br/>
         <small>${analysis.message || ""}</small>
       `;
     } catch (err) {
