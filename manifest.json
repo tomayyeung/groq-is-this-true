@@ -36,5 +36,11 @@
     "options_ui": {
         "page": "options/options.html",
         "open_in_tab": true
-    }
+    },
+    "web_accessible_resources": [
+        {
+            "resources": ["news-bias.json"],
+            "matches": ["<all_urls>"]
+        }
+    ]
 }

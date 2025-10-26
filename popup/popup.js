@@ -2,6 +2,112 @@ const resultEl = document.getElementById("info");
 const sourcesEl = document.getElementById("sources");
 const aiResultEl = document.getElementById("ai-result");
 const currentUrlEl = document.getElementById("current-url");
+const biasInfoEl = document.getElementById("bias-info");
+const biasDetailsEl = document.getElementById("bias-details");
+
+// Load news bias data
+let newsBiasData = [];
+fetch(chrome.runtime.getURL('news-bias.json'))
+  .then(response => response.json())
+  .then(data => {
+    newsBiasData = data;
+  })
+  .catch(error => console.error('Error loading bias data:', error));
+
+// Function to find bias information for a hostname
+function findBiasInfo(hostname) {
+  // Remove www. prefix for matching
+  const cleanHost = hostname.replace(/^www\./, '');
+  
+  // Look for exact match or domain match
+  const match = newsBiasData.find(entry => {
+    const entryUrl = entry.url.replace(/^www\./, '').replace(/\/$/, '');
+    return entryUrl === cleanHost || cleanHost.endsWith(entryUrl);
+  });
+  
+  return match;
+}
+
+// Function to load and display bias information
+function loadBiasInfo() {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (!tabs || !tabs[0]) {
+      biasDetailsEl.textContent = "Error: No active tab found";
+      return;
+    }
+
+    chrome.tabs.sendMessage(tabs[0].id, { action: "getSelection" }, (response) => {
+      if (chrome.runtime.lastError) {
+        biasDetailsEl.textContent = "Error: Could not connect to page. Try refreshing the page.";
+        console.error(chrome.runtime.lastError);
+        return;
+      }
+
+      const currentHost = response?.currentHost;
+      if (!currentHost) {
+        biasDetailsEl.textContent = "Could not get current host";
+        return;
+      }
+
+      const biasData = findBiasInfo(currentHost);
+      displayBiasInfo(biasData, currentHost);
+    });
+  });
+}
+
+// Function to display bias information
+function displayBiasInfo(biasData, hostname) {
+  if (!biasData) {
+    biasDetailsEl.innerHTML = `
+      <div style="text-align: center; padding: 20px;">
+        <div style="font-size: 24px; margin-bottom: 8px;">🔍</div>
+        <div style="font-weight: bold; margin-bottom: 4px;">No bias data found</div>
+        <div style="font-size: 12px; color: #666;">
+          Source: ${hostname}
+        </div>
+        <div style="font-size: 11px; color: #999; margin-top: 8px;">
+          This source is not in our bias database
+        </div>
+      </div>
+    `;
+    return;
+  }
+  
+  const biasColors = {
+    'left': '#4285f4',
+    'left-center': '#7cb5ec',
+    'center': '#90ed7d',
+    'right-center': '#f7a35c',
+    'right': '#f45b5b',
+    'pro-science': '#8085e9'
+  };
+  
+  const bgColor = biasColors[biasData.bias] || '#f0f0f0';
+  
+  biasInfoEl.style.backgroundColor = bgColor + '20'; // 20 for transparency
+  biasInfoEl.style.border = `2px solid ${bgColor}`;
+  
+  biasDetailsEl.innerHTML = `
+    <div style="text-align: center; padding: 10px;">
+      <div style="font-size: 28px; margin-bottom: 8px;">⚖️</div>
+      <div style="font-weight: bold; font-size: 18px; color: ${bgColor}; margin-bottom: 8px;">
+        ${biasData.bias.toUpperCase()}
+      </div>
+      <div style="font-size: 13px; margin-bottom: 4px;">
+        <strong>Source:</strong> ${biasData.name}
+      </div>
+      <div style="font-size: 13px; margin-bottom: 4px;">
+        <strong>Factual Reporting:</strong> ${biasData.factual}
+      </div>
+      <div style="font-size: 13px; margin-bottom: 12px;">
+        <strong>Credibility:</strong> ${biasData.credibility}
+      </div>
+      <a href="${biasData.profile}" target="_blank" style="color: ${bgColor}; font-size: 12px; text-decoration: none;">
+        View full profile →
+      </a>
+    </div>
+  `;
+}
 
 // Mode switching
 const factCheckBtn = document.getElementById("fact-check-mode");
@@ -10,6 +116,8 @@ const aiDetectBtn = document.getElementById("ai-detect-mode");
 const aiDetectSection = document.getElementById("ai-detect-section");
 const aiTextDetectBtn = document.getElementById("ai-text-detect-mode");
 const aiTextDetectSection = document.getElementById("ai-text-detect-section");
+const biasCheckBtn = document.getElementById("bias-check-mode");
+const biasCheckSection = document.getElementById("bias-check-section");
 
 let currentMode = "fact-check";
 
@@ -21,6 +129,8 @@ factCheckBtn.addEventListener("click", () => {
   aiDetectBtn.classList.remove('active');
   aiTextDetectSection.classList.remove("active");
   aiTextDetectBtn.classList.remove('active');
+  biasCheckSection.classList.remove("active");
+  biasCheckBtn.classList.remove('active');
 });
 
 aiDetectBtn.addEventListener("click", () => {
@@ -31,6 +141,8 @@ aiDetectBtn.addEventListener("click", () => {
   factCheckBtn.classList.remove('active');
   aiTextDetectSection.classList.remove("active");
   aiTextDetectBtn.classList.remove('active');
+  biasCheckSection.classList.remove("active");
+  biasCheckBtn.classList.remove('active');
 });
 
 aiTextDetectBtn.addEventListener("click", () => {
@@ -41,6 +153,23 @@ aiTextDetectBtn.addEventListener("click", () => {
   factCheckBtn.classList.remove('active');
   aiDetectSection.classList.remove("active");
   aiDetectBtn.classList.remove('active');
+  biasCheckSection.classList.remove("active");
+  biasCheckBtn.classList.remove('active');
+});
+
+biasCheckBtn.addEventListener("click", () => {
+  currentMode = "bias-check";
+  biasCheckSection.classList.add("active");
+  biasCheckBtn.classList.add('active');
+  factCheckSection.classList.remove("active");
+  factCheckBtn.classList.remove('active');
+  aiDetectSection.classList.remove("active");
+  aiDetectBtn.classList.remove('active');
+  aiTextDetectSection.classList.remove("active");
+  aiTextDetectBtn.classList.remove('active');
+  
+  // Load bias info when switching to this mode
+  loadBiasInfo();
 });
 
 // Fact check functionality
@@ -71,7 +200,6 @@ function performFactCheck() {
         resultEl.textContent = "(Could not get current host)";
         return;
       }
-
 
       const currentUrl = response?.currentUrl;
       if (!currentUrl) {
