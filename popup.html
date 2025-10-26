@@ -45,6 +45,11 @@
       color: white;
     }
 
+    .ai-text-detect-btn {
+      background: #f32121;
+      color: white;
+    }
+
     .action-btn:hover {
       opacity: 0.9;
     }
@@ -75,6 +80,7 @@
   <div class="action-buttons">
     <button class="action-btn fact-check-btn" id="fact-check-mode">📝 Fact Check</button>
     <button class="action-btn ai-detect-btn" id="ai-detect-mode">🖼️ AI Detect</button>
+    <button class="action-btn ai-text-detect-btn" id="ai-text-detect-mode">✏️ Detect AI Text</button>
   </div>
 
   <div id="fact-check-section" class="content-section active">
@@ -94,6 +100,12 @@
   </div>
 
   <div id="raw-result"></div>
+
+  <div id="ai-text-detect-section" class="content-section">
+    <h3>AI Text Detection:</h3>
+    <h4 id="current-url"></h4>
+    <div id="ai-text-result">Loading result...</div>
+  </div>
 
   <script src="popup.js"></script>
 </body>
