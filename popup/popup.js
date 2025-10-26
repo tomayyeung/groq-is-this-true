@@ -399,7 +399,7 @@ document.getElementById("check-for-ai-text").addEventListener("click", async () 
           ${label}
         </div>
         <div style="font-size: 24px; font-weight: bold; margin-bottom: 4px;">
-          ${percentage}% AI
+          ${analysisNum}% AI
         </div>
 
       </div>
