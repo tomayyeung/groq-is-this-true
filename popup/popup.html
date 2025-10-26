@@ -15,6 +15,7 @@
     <button class="action-btn fact-check-btn" id="fact-check-mode">📝<span class="tooltip-text">Fact Check</span></button>
     <button class="action-btn ai-detect-btn" id="ai-detect-mode">🖼️<span class="tooltip-text">AI Image Detect</span></button>
     <button class="action-btn ai-text-detect-btn" id="ai-text-detect-mode">✏️<span class="tooltip-text">Detect AI Text</span></button>
+    <button class="action-btn" id="bias-check-mode" style="background: #9c27b0; color: white;">⚖️<span class="tooltip-text">Bias Check</span></button>
   </div>
 
   <div class="action-result">
@@ -40,6 +41,13 @@
         🔍 Check for AI
       </button>
       <div id="ai-text-result"></div>
+    </div>
+
+    <div id="bias-check-section" class="content-section">
+      <h3>Source Bias Analysis:</h3>
+      <div id="bias-info" style="margin-top: 10px; padding: 10px; border-radius: 6px;">
+        <div id="bias-details">Loading bias information...</div>
+      </div>
     </div>
   </div>
 
