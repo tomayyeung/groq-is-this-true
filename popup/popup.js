@@ -221,3 +221,55 @@ function displayAIResult(data) {
     `;
   }
 }
+
+
+document.getElementById("check-for-ai-text").addEventListener("click", async () => {
+  const resultDiv = document.getElementById("ai-text-result");
+  resultDiv.textContent = "Awaiting result...";
+
+  // Get active tab
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+  // Ask content script for page text
+  chrome.tabs.sendMessage(tab.id, { action: "extractText" }, async (response) => {
+    if (!response || !response.text) {
+      resultDiv.textContent = "Could not extract text from this page.";
+      return;
+    }
+
+    const text = response.text.slice(0, 10000); // limit length if needed
+    resultDiv.textContent = "Analyzing text with Sapling AI...";
+
+    try {
+      const analysis = await analyzeWithSapling(text);
+      resultDiv.innerHTML = `
+        <strong>AI Probability:</strong> ${Math.round(analysis.ai_probability * 100)}%<br/>
+        <small>${analysis.message || ""}</small>
+      `;
+    } catch (err) {
+      resultDiv.textContent = "Error: " + err.message;
+    }
+  });
+});
+
+async function analyzeWithSapling(text) {
+  // Retrieve key from storage (you said you store it in options)
+  const { saplingKey } = await chrome.storage.sync.get("saplingKey");
+
+  if (!saplingKey) {
+    throw new Error("Sapling API key not configured in extension options.");
+  }
+
+  const response = await fetch("https://api.sapling.ai/api/v1/aidetect", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Key ${saplingKey}`
+    },
+    body: JSON.stringify({ text })
+  });
+
+  if (!response.ok) throw new Error("API error: " + response.status);
+
+  return await response.json();
+}

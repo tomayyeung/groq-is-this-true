@@ -23,7 +23,8 @@
             ],
             "js": [
                 "selection.js",
-                "dist/cropper-handler.js"
+                "dist/cropper-handler.js",
+                "sapling.js"
             ]
         }
     ],
