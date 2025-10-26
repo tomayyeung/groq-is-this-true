@@ -1,0 +1,128 @@
+body {
+  font-family: 'Lato', sans-serif;
+  margin: 0; /* reset default browser margin so padding behaves predictably */
+  padding: 10px;
+  width: 300px;
+}
+
+/* #result {
+  margin-top: 10px;
+  padding: 8px;
+  background: #f0f0f0;
+  border-radius: 6px;
+  min-height: 50px;
+} */
+
+#mascot {
+  display: block;
+  margin: 0 auto;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative; /* needed for tooltip absolute positioning */
+}
+
+.action-btn.active {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  transform: translateY(-1px);
+}
+
+.fact-check-btn {
+  background: rgb(76, 175, 125);
+  color: white;
+}
+
+.ai-detect-btn {
+  background: rgb(21, 84, 232);
+  color: white;
+}
+
+/* Dim non-active buttons by using semi-transparent background colors
+   instead of the `opacity` property which affects child elements. */
+.fact-check-btn:not(.active) {
+  background: rgba(76, 175, 125, 0.65); /* slightly transparent green */
+}
+.ai-detect-btn:not(.active) {
+  background: rgba(21, 84, 232, 0.65); /* slightly transparent blue */
+}
+
+.action-btn:hover {
+  /* avoid changing opacity (affects child tooltip). Use subtle lift instead */
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.action-btn:active {
+  transform: scale(0.98);
+}
+
+/* Tooltip text */
+.tooltip-text {
+  visibility: hidden; /* Hidden by default */
+  width: auto;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%); /* center horizontally */
+  padding: 8px;
+  background-color: rgba(0,0,0,0.85);
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1; /* Ensure tooltip is displayed above content */
+  white-space: nowrap; /* keep on one line */
+  max-width: 220px; /* avoid overflowing popup width */
+  box-sizing: border-box;
+}
+
+/* Show the tooltip text on hover */
+.action-btn:hover .tooltip-text {
+  visibility: visible;
+}
+
+.content-section {
+  display: none;
+}
+
+.content-section.active {
+  display: block;
+}
+
+.action-result {
+  border-top: 1px solid black;
+}
+
+#sources-label {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+#sources {
+  margin: 0;
+}
+
+#sources li a {
+  color: rgb(115, 115, 115);
+  text-wrap: wrap;
+}
+
+#ai-result {
+  margin-top: 10px;
+  padding: 8px;
+  background: #f0f0f0;
+  border-radius: 6px;
+  min-height: 50px;
+}

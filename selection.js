@@ -45,12 +45,8 @@ document.addEventListener("mouseup", (event) => {
     document.body.appendChild(popup);
 
     popup.addEventListener("click", function () {
-
-      //call popup.js
       chrome.runtime.sendMessage({ action: "open_extension_popup" });
-
       removePopup();
-      //alert("clicked popup");
     });
   } else if (popup && !popup.contains(event.target)) {
     console.log("there is a popup!");

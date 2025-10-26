@@ -28,12 +28,12 @@
         }
     ],
     "action": {
-        "default_popup": "popup.html",
+        "default_popup": "popup/popup.html",
         "default_title": "Get Selected Text"
     }
     ,
     "options_ui": {
-        "page": "options.html",
+        "page": "options/options.html",
         "open_in_tab": true
     }
 }

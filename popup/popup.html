@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Groq</title>
+  <link rel="stylesheet" href="./popup.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <img id="mascot" src="../imgs/happy.png" alt="happy" width="100">
+
+  <div class="action-buttons">
+    <button class="action-btn fact-check-btn" id="fact-check-mode">📝<span class="tooltip-text">Fact Check</span></button>
+    <button class="action-btn ai-detect-btn" id="ai-detect-mode">🖼️<span class="tooltip-text">AI Image Detect</span></button>
+    <button class="action-btn ai-text-detect-btn" id="ai-text-detect-mode">✏️<span class="tooltip-text">Detect AI Text</span></button>
+  </div>
+
+  <div class="action-result">
+    <div id="fact-check-section" class="content-section active">
+      <h3>Groq says:</h3>
+      <!-- <h4 id="current-url"></h4> -->
+      <div id="info">Loading result...</div>
+      <div id="sources-label"></div>
+      <ul id="sources"></ul>
+    </div>
+
+    <div id="ai-detect-section" class="content-section">
+      <h3>AI Image Detection:</h3>
+      <button id="capture-screenshot" class="action-btn ai-detect-btn" style="width: 100%; margin-bottom: 10px;">
+        📸 Capture Screenshot
+      </button>
+      <div id="ai-result">Click "Capture Screenshot" to analyze an image</div>
+    </div>
+
+    <div id="ai-text-detect-section" class="content-section">
+      <h3>AI Text Detection:</h3>
+      <h4 id="current-url"></h4>
+      <div id="ai-text-result">Loading result...</div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>
