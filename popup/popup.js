@@ -40,7 +40,8 @@ aiTextDetectBtn.addEventListener("click", () => {
   factCheckSection.classList.remove("active");
   factCheckBtn.classList.remove('active');
   aiDetectSection.classList.remove("active");
-  aiDetectBtn.classList.remove('active');});
+  aiDetectBtn.classList.remove('active');
+});
 
 // Fact check functionality
 function performFactCheck() {

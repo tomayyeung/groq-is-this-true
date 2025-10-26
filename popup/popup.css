@@ -50,6 +50,11 @@ body {
   color: white;
 }
 
+.ai-text-detect-btn {
+  background: rgb(232, 21, 21);
+  color: white;
+}
+
 /* Dim non-active buttons by using semi-transparent background colors
    instead of the `opacity` property which affects child elements. */
 .fact-check-btn:not(.active) {
@@ -57,6 +62,10 @@ body {
 }
 .ai-detect-btn:not(.active) {
   background: rgba(21, 84, 232, 0.65); /* slightly transparent blue */
+}
+
+.ai-text-detect-btn:not(.active) {
+  background: rgba(232, 21, 21, 0.65); /* slightly transparent blue */
 }
 
 .action-btn:hover {
@@ -120,6 +129,14 @@ body {
 }
 
 #ai-result {
+  margin-top: 10px;
+  padding: 8px;
+  background: #f0f0f0;
+  border-radius: 6px;
+  min-height: 50px;
+}
+
+#ai-text-result {
   margin-top: 10px;
   padding: 8px;
   background: #f0f0f0;
