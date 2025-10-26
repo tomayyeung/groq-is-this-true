@@ -1,91 +1,97 @@
 import { factCheck } from './groq.js';
 
-// Listen for factCheck requests from popup
+// Listener
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "performFactCheck") {
-    // Retrieve the stored API key from chrome.storage before making the call.
-    chrome.storage.sync.get(["groqKey"], (items) => {
-      const apiKey = items.groqKey;
-      if (!apiKey) {
-        sendResponse({ error: "GROQ API key not configured. Open extension options to set the key." });
-        return;
-      }
-
-      factCheck(message.text, apiKey, message.currentUrl)
-        .then(result => sendResponse({ result }))
-        .catch(error => sendResponse({ error: error.message }));
-    });
-
-    // Keep the message channel open for the async response from storage + API
-    return true;
+    performFactCheck(message, sendResponse);
   } else if (message.action === "captureAndCrop") {
-    // Capture the visible tab
-    chrome.tabs.captureVisibleTab(null, { format: 'png' }, (dataUrl) => {
-      if (chrome.runtime.lastError) {
-        sendResponse({ error: chrome.runtime.lastError.message });
-        return;
-      }
-
-      // Crop the image based on the selection rect
-      cropImage(dataUrl, message.rect).then(croppedDataUrl => {
-        // Send to Sightengine API for AI detection
-        detectAIImage(croppedDataUrl).then(result => {
-          const resultData = {
-            action: "aiDetectionResult",
-            result: result.type
-          };
-          // Store in chrome.storage.local first for popup persistence
-          chrome.storage.local.set({ pendingAIResult: resultData }, () => {
-            // Wait a moment to ensure storage is written, then reopen popup
-            setTimeout(() => {
-              chrome.action.openPopup(() => {
-                if (chrome.runtime.lastError) {
-                  console.log('Could not open popup:', chrome.runtime.lastError);
-                }
-              });
-            }, 100);
-          });
-          sendResponse({ success: true });
-        }).catch(error => {
-          const errorData = {
-            action: "aiDetectionResult",
-            error: error.message
-          };
-          // Store error in chrome.storage.local first
-          chrome.storage.local.set({ pendingAIResult: errorData }, () => {
-            // Wait a moment to ensure storage is written, then reopen popup
-            setTimeout(() => {
-              chrome.action.openPopup(() => {
-                if (chrome.runtime.lastError) {
-                  console.log('Could not open popup:', chrome.runtime.lastError);
-                }
-              });
-            }, 100);
-          });
-          sendResponse({ error: error.message });
-        });
-      }).catch(error => {
-        sendResponse({ error: error.message });
-      });
-    });
-
-    return true; // Keep message channel open
+    captureAndCrop(message, sendResponse);
+  } else if (message.action === "open_extension_popup") {
+    openExtensionPopup();
   }
-
-
-
-  if (message.action === "open_extension_popup") {
-    // Programmatically open the extension's popup
-    // Note: This API is intended for user-driven interactions.
-    if (chrome.action.openPopup) {
-      chrome.action.openPopup();
-    } else {
-      console.warn("chrome.action.openPopup not available in this Chrome version or context.");
-    }
-  }
+  return true; // keep channel open for async response
 });
 
-// Function to crop the image
+// Called for message action "performFactCheck". Message should have text and currentUrl. Will call sendResponse with result (string) or error.
+function performFactCheck(message, sendResponse) {
+  // Retrieve the stored API key from chrome.storage before making the call.
+  chrome.storage.sync.get(["groqKey"], (items) => {
+    const apiKey = items.groqKey;
+    if (!apiKey) {
+      sendResponse({ error: "GROQ API key not configured. Open extension options to set the key." });
+      return;
+    }
+
+    factCheck(message.text, apiKey, message.currentUrl)
+      .then(result => sendResponse({ result }))
+      .catch(error => sendResponse({ error: error.message }));
+  });
+}
+
+// Called for message action "captureAndCrop". Message should have rect. Will call sendResponse with success (boolean) or error (with a message). 
+function captureAndCrop(message, sendResponse) {
+  // Capture the visible tab
+  chrome.tabs.captureVisibleTab(null, { format: 'png' }, (dataUrl) => {
+    if (chrome.runtime.lastError) {
+      sendResponse({ error: chrome.runtime.lastError.message });
+      return;
+    }
+
+    // Crop the image based on the selection rect
+    cropImage(dataUrl, message.rect).then(croppedDataUrl => {
+      // Send to Sightengine API for AI detection
+      detectAIImage(croppedDataUrl).then(result => {
+        const resultData = {
+          action: "aiDetectionResult",
+          result: result.type
+        };
+        // Store in chrome.storage.local first for popup persistence
+        chrome.storage.local.set({ pendingAIResult: resultData }, () => {
+          // Wait a moment to ensure storage is written, then reopen popup
+          setTimeout(() => {
+            chrome.action.openPopup(() => {
+              if (chrome.runtime.lastError) {
+                console.log('Could not open popup:', chrome.runtime.lastError);
+              }
+            });
+          }, 100);
+        });
+        sendResponse({ success: true });
+      }).catch(error => {
+        const errorData = {
+          action: "aiDetectionResult",
+          error: error.message
+        };
+        // Store error in chrome.storage.local first
+        chrome.storage.local.set({ pendingAIResult: errorData }, () => {
+          // Wait a moment to ensure storage is written, then reopen popup
+          setTimeout(() => {
+            chrome.action.openPopup(() => {
+              if (chrome.runtime.lastError) {
+                console.log('Could not open popup:', chrome.runtime.lastError);
+              }
+            });
+          }, 100);
+        });
+        sendResponse({ error: error.message });
+      });
+    }).catch(error => {
+      sendResponse({ error: error.message });
+    });
+  });
+}
+
+// Called for message action "open_extension_popup". Used by popup to open the extension when the user clicks the tooltip.
+function openExtensionPopup() {
+  // Programmatically open the extension's popup
+  if (chrome.action.openPopup) {
+    chrome.action.openPopup();
+  } else {
+    console.warn("chrome.action.openPopup not available in this Chrome version or context.");
+  }
+}
+
+// Helper function for captureAndCrop() to crop the image
 function cropImage(dataUrl, rect) {
   return new Promise((resolve, reject) => {
     // Create an ImageBitmap from the data URL
@@ -122,7 +128,7 @@ function cropImage(dataUrl, rect) {
   });
 }
 
-// Function to detect AI-generated image using Sightengine API
+// Helper function for captureAndCrop() to detect AI-generated image using Sightengine API
 async function detectAIImage(imageDataUrl) {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(["sightengineUser", "sightengineSecret"], async (items) => {
