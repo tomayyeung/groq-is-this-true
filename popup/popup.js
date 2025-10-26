@@ -237,15 +237,45 @@ document.getElementById("check-for-ai-text").addEventListener("click", async () 
       return;
     }
 
-    const text = response.text.slice(0, 3000); // limit length if needed
+    const text = response.text.slice(0, 5000); // limit length if needed
     resultDiv.textContent = "Analyzing text with Sapling AI...";
 
     try {
       const analysis = await analyzeWithSapling(text);
+      const analysisNum = parseFloat(analysis.score);
+
+
+      let bgColor, emoji, label;
+    if (analysisNum > 0.7) {
+      bgColor = '#f44336';
+      emoji = '🤖';
+      label = 'Very Likely AI-Generated';
+    } else if (analysisNum > 0.5) {
+      bgColor = '#ff9800';
+      emoji = '⚠️';
+      label = 'Possibly AI-Generated';
+    } else if (analysisNum > 0.3) {
+      bgColor = '#ffc107';
+      emoji = '🤔';
+      label = 'Uncertain';
+    } else {
+      bgColor = '#4CAF50';
+      emoji = '✅';
+      label = 'Likely Real';
+    }
+
       resultDiv.innerHTML = `
-        <strong>AI Probability:</strong> ${analysis.score}%<br/>
-        <small>${analysis.message || ""}</small>
-      `;
+      <div style="text-align: center; padding: 10px;">
+        <div style="font-size: 32px; margin-bottom: 8px;">${emoji}</div>
+        <div style="font-weight: bold; font-size: 16px; margin-bottom: 8px; color: ${bgColor};">
+          ${label}
+        </div>
+        <div style="font-size: 24px; font-weight: bold; margin-bottom: 4px;">
+          ${percentage}% AI
+        </div>
+
+      </div>
+    `;
     } catch (err) {
       resultDiv.textContent = "Error: " + err.message;
     }
